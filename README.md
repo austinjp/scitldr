@@ -55,6 +55,12 @@ For the evaluation, you will need `files2rouge`.
 Please follow the installation instructions [here](https://github.com/pltrdy/files2rouge).
 
 ### Model Weights
+
+Filename convention:
+
+  - "ao" means "abstract only"
+  - "aic" means "abstract, introduction and conclusions"
+
 [`catts.tldr-ao`](https://storage.cloud.google.com/skiff-models/scitldr/catts.tldr-ao.pt)
 
 [`catts.tldr-aic`](https://storage.cloud.google.com/skiff-models/scitldr/catts.tldr-aic.pt)
