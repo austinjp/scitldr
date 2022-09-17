@@ -28,13 +28,26 @@ SciTLDR is split in to a 60/20/20 train/dev/test split. For each file, each line
 The keys `rouge_scores` and `source_labels` are not necessary for any code to run, but we provide precomputed Rouge scores to encourage future research. 
 
 ## Requirements
-We use [Fairseq](https://fairseq.readthedocs.io) to train and evaluate our models. 
-Install Fairseq as follows:
-```bash
-git clone fairseq repo #TODO figure out how to use specific version
-cd fairseq
-pip install --editable .
+This guide assumes you have set up a Python virtualenv in the usual manner:
+
+```sh
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip wheel build # optional but advisable
 ```
+
+We use [Fairseq](https://fairseq.readthedocs.io) to train and evaluate our models. Install Fairseq using pip:
+
+```sh
+pip install fairseq
+```
+
+If that causes problems, you can try installing specific versions of Fairseq, for example:
+```sh
+pip install git+https://github.com/facebookresearch/fairseq@v0.10.2
+```
+
+For further info on this approach, see [the relevant pip documentation](https://pip.pypa.io/en/latest/topics/vcs-support/).
 
 To install all other requirements, run `pip install -r requirements.txt`
 
@@ -58,19 +71,25 @@ Please follow the installation instructions [here](https://github.com/pltrdy/fil
 
 [`bart-xsum.tldr-aic`](https://storage.cloud.google.com/skiff-models/scitldr/bart-xsum.tldr-aic.pt)
 
+Download your chosen file or files somewhere, e.g. `/path/to/modeldir`. The **generation** step below looks for a file named `checkpoint_best.pt` in the specified dir, so you may want to do something like this:
+
+```sh
+ln -s /path/to/modeldir/catts.tldr-ao.pt /path/to/modeldir/checkpoint_best.pt
+```
 
 ### Data Preprocessing
 In order to format the data to work for the Fairseq library, run:
 ```bash
-cd SciTLDR-Data
 export TASK=SciTLDR-A # Choose from {A, AIC, FullText}
+cd SciTLDR-Data
 chmod +x make_datafiles.sh
 ./make_datafiles.sh # BPE preprocess
+cd -
 ```
 `$TASK/ctrl` contains the dataset formatted with the control codes.
 
 ### Generation
-This code takes in a `test.source` file, in which each line is an input and outputs a `test.hypo` file with the predictions. See [decoder_params](decoder_params.md) for optimal decoder parameters for each version of the model.
+This code takes in a `test.source` file in which each line is an input, and outputs a `test.hypo` file with the predictions. See [decoder_params](decoder_params.md) for optimal decoder parameters for each version of the model.
 ```bash
 python scripts/generate.py /path/to/modeldir/ SciTLDR-Data/SciTLDR-A/ctrl ./ --beam 2 --lenpen 0.4 --test_fname test.hypo
 ```
